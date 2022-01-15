@@ -1,41 +1,42 @@
 const chooseOptimalDistance = (t, k, ls) => {
     if(t >= 0 && k >= 1 && ls.length >= k){
-        const array = ls;
-        const k1 = k; 
-        function combine2(array, k1) {
-        const n = array.length - 1;
-        const m = k1 - 1;
-        const finds = []; 
-        const mask = []; 
-        let finish = false;
-        for (let i = 0; i < k1; i++) mask.push(array[i]);
-        while (!finish) {
-            finish = true;
-            const str = mask.join(',');
-            if (!finds.includes(str)) finds.push(str);
-            for (let i = 0; i < k1; i++) {
-            if (mask[m - i] != array[n - i]) {
-                finish = false;
-                let p = array.indexOf(mask[m - i]);
-                mask[m - i] = array[++p];
-                for (let j = m - i + 1; j < k1; j++) {
-                    mask[j] = array[++p];
-                }
-                break;
+        const arrayX = ls;
+        const x = k;
+        function printPermutations(arrayX, x) {
+        let comb = [];
+        let indices = [];
+        function next(index) {
+          if (index == x) {
+            var result = [];
+            for (let i = 0; i < k; i++) {
+              result[i] = arrayX[indices[i]];
             }
+            comb.push(result);
+            return;
+          }
+          for (let i = 0; i < arrayX.length; i++) {
+            if (alreadyInCombination(i, index))
+              continue;
+            indices[index] = i;
+            next(index + 1);
+          }
+        }
+        function alreadyInCombination(i, index) {
+            for (let j = 0; j < index; j++) {
+              if (indices[j] == i) {
+                return true;
+              }
             }
+            return false;
         }
-        return finds;
-        }
+        next(0);
+        return comb;
+      }
         let foundNumberIdx = 0;
         let sumCombinationAllSum = 0;
-        let combinationAll = [];
         let combinationAllSums = [];
         let combinationAllSumsDownNumber =[];
-        const combinations = combine2(array, k);
-        combinations.map(combination => {
-            combinationAll.push(combination.split(','));
-        })
+        const combinationAll  = printPermutations(arrayX, x);
         combinationAll.map(combinationA =>{
             combinationA.map(allSum => {
                 sumCombinationAllSum = sumCombinationAllSum + (Number(allSum));
@@ -53,5 +54,6 @@ const chooseOptimalDistance = (t, k, ls) => {
         console.log(null);
     }
 }
-chooseOptimalDistance(174, 4, [51, 56, 58, 59, 61]); //173
-chooseOptimalDistance(163, 3, [50]); // null
+chooseOptimalDistance(174, 3, [51, 56, 58, 59, 61]);
+chooseOptimalDistance(230, 3, [91, 74, 73, 85, 73, 81, 87]);
+chooseOptimalDistance(163, 3, [50]); 
